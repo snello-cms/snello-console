@@ -11,30 +11,30 @@ Metadata {
 
     public String uuid;
     public String table_name;
+    public String icon;
     public String select_fields;
     public String search_fields;
     public String description;
-    //serve per tabelle preesistenti
+    public String order_by;
+
+    // if the table is pre existent
     public String alias_table;
     public String alias_condition;
 
-
+    // the table exists and snello only read 
+    public boolean already_exist;
+    // the owner of table is SNELLO
+    public boolean created;
+    
     public String table_key;
     public String table_key_type;
     public String table_key_addition;
+    // if we want customize the creation table 
     public String creation_query;
 
-    public String order_by;
-
+    // to manage the editor fields
     // tab1:group0,group1;tab2:
     public String tab_groups;
 
-    public String icon;
-
-
-    // la tabella esiste e non deve essere gestita da SNELLO
-    public boolean already_exist;
-    //la tabella VA CREATA E GESTISTA DA SNELLO
-    public boolean created;
 }
 ```
