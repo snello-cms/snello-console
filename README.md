@@ -41,6 +41,10 @@ Metadata {
 
 ## FieldDefinition
 
+we need to reflect about the difference between:
+- public String type;
+- public String input_type;
+    
 
 ```
 FieldDefinition {
