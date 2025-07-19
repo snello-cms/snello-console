@@ -1,6 +1,6 @@
 # snello-console
-Snello Console is the porting in latest version of Angular (20.x) of Snello Admin.
 
+Snello Console is the porting in latest version of Angular (20.x) of Snello Admin.
 
 <img width="1352" height="389" alt="Screenshot 2025-07-11 alle 21 10 10" src="https://github.com/user-attachments/assets/747fc84d-f516-445e-b6c4-96e425670406" />
 
@@ -21,15 +21,15 @@ Metadata {
     public String alias_table;
     public String alias_condition;
 
-    // the table exists and snello only read 
+    // the table exists and snello only read
     public boolean already_exist;
     // the owner of table is SNELLO
     public boolean created;
-    
+
     public String table_key;
     public String table_key_type;
     public String table_key_addition;
-    // if we want customize the creation table 
+    // if we want customize the creation table
     public String creation_query;
 
     // to manage the editor fields
@@ -42,9 +42,9 @@ Metadata {
 ## FieldDefinition
 
 we need to reflect about the difference between:
+
 - public String type;
 - public String input_type;
-    
 
 ```
 FieldDefinition {
