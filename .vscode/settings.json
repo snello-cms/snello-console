@@ -1,0 +1,9 @@
+{
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features",
+    "editor.insertSpaces": false,
+    "editor.tabSize": 4
+  }
+}
