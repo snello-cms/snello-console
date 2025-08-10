@@ -1,0 +1,9 @@
+{
+	"KEYCLOAK_URL": "https://sso.kayak.love/",
+	"KEYCLOAK_REALM": "kayak",
+	"KEYCLOAK_CLIENTID": "snello-admin",
+
+	"BACKEND_API": "https://ldap-integration-api-corporate.icgapp.com",
+	"LDAP_BACKEND_API": "https://ldap-users-corporate.icgapp.dev",
+	"API_APP_VERSION": "https://app-versioning-corporate.icgapp.dev/"
+}
