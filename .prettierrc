@@ -5,12 +5,13 @@
 	"printWidth": 120,
 	"semi": true,
 	"trailingComma": "none",
-	"bracketSameLine": true,
+	"bracketSameLine": false,
 	"overrides": [
 		{
 			"files": "*.html",
 			"options": {
-				"parser": "html"
+				"parser": "angular",
+				"htmlWhitespaceSensitivity": "strict"
 			}
 		}
 	]

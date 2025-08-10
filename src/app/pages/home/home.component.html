@@ -1,0 +1,18 @@
+<div class="flex justify-content-center align-items-center min-h-screen">
+	<p-card header="Welcome to Snello Console" styleClass="w-full md:w-6 lg:w-4">
+		<div class="flex flex-column align-items-center text-center">
+			@if (authService.userInfo$ | async; as userInfo) {
+				<div class="mb-4">
+					<h2 class="text-xl font-bold mb-3">User Information</h2>
+					<p><strong>Username:</strong> {{ userInfo.username }}</p>
+					<p><strong>Email:</strong> {{ userInfo.email }}</p>
+				</div>
+
+				<p-button label="Logout" severity="danger" icon="pi pi-sign-out" (onClick)="logout()"> </p-button>
+			} @else {
+				<p class="mb-4">Please log in to access the application.</p>
+				<p-button label="Login" severity="primary" icon="pi pi-sign-in" (onClick)="login()"> </p-button>
+			}
+		</div>
+	</p-card>
+</div>
