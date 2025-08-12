@@ -4,7 +4,7 @@
 	"scripts": {
 		"ng": "ng",
 		"start": "ng serve",
-		"build": "ng build --prod --base-href /snello-console --deploy-url /snello-console/",
+		"build": "ng build --configuration=production --base-href /snello-console --deploy-url /snello-console/",
 		"watch": "ng build --watch --configuration development",
 		"test": "ng test",
 		"format": "prettier --write \"src/**/*.{ts,js,html,css,scss}\""
