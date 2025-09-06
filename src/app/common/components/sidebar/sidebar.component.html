@@ -1,0 +1,78 @@
+<div class="header">
+	<div class="red-base"></div>
+	<div class="logo-header">
+		<a [routerLink]="'/adminpage'" (click)="select('adminpage')">
+			<img class="logo" src="{{ asset_path }}/images/logo_white.svg" />
+		</a>
+	</div>
+
+	<ul class="nav nav-tabs justify-content-center d-flex flex-wrap">
+		<li
+			class="nav-item"
+			*permit="
+				'Admin, metadatas_edit, ' +
+				'metadatas_view,fielddefinitions_edit, ' +
+				'fielddefinitions_view,conditions_edit, ' +
+				'conditions_view,documents_edit, ' +
+				'documents_view,publicdata_edit,selectqueries_edit, ' +
+				'selectqueries_view,users_edit, users_view,roles_edit,roles_view,urlmaprules_edit, ' +
+				'urlmaprules_view,links_edit, links_view,draggables_edit, draggables_view'
+			"
+		>
+			<a
+				class="nav-link"
+				[routerLink]="'/adminpage'"
+				(click)="select('adminpage')"
+				[ngClass]="{ active: isAdminPage() === 'active' }"
+			>
+				<i class="fa fa-bookmark" aria-hidden="true"></i>
+				ADMIN
+			</a>
+		</li>
+
+		<li class="nav-item" *permit="'Admin, contents_edit, contents_view'">
+			<a
+				class="nav-link"
+				[routerLink]="'/home'"
+				(click)="select('home')"
+				[ngClass]="{ active: isContenPage() === 'active' }"
+			>
+				<i class="fa fa-bookmark-o" aria-hidden="true"></i>
+				CONTENTS
+			</a>
+		</li>
+	</ul>
+
+	<ul class="user-menu">
+		@if (userDetails(); as user) {
+			<li [class]="''">
+				<i class="fa fa-user-circle" aria-hidden="true"></i> {{ user.username }} &nbsp;<a
+					(click)="logout()"
+					style="cursor: pointer"
+				>
+					logout <i class="fa fa-sign-out" aria-hidden="true"></i>
+				</a>
+			</li>
+		}
+	</ul>
+</div>
+
+<div class="sidenav">
+	<ul>
+		<li [class]="selected == 'adminpage' ? 'active' : ''">
+			<a [routerLink]="'/adminpage'" (click)="select('adminpage')">
+				<i class="fa fa-home" aria-hidden="true"></i>
+			</a>
+		</li>
+		<li [class]="selected == 'home' ? 'active' : ''">
+			<a [routerLink]="'/home'" (click)="select('home')">
+				<i class="fa fa-table" aria-hidden="true"></i>
+			</a>
+		</li>
+		<li [class]="''">
+			<a (click)="logout()" style="cursor: pointer">
+				<i class="fa fa-sign-out" aria-hidden="true"></i>
+			</a>
+		</li>
+	</ul>
+</div>

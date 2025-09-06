@@ -1,8 +1,9 @@
 import { Directive, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
+
 import { AbstractService } from '../services/abstract.service';
 import { AbstractNavigationEditComponent } from './abstract-navigation-edit-component';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastService } from '../../toast.service';
 import { Helpers } from '../../../constants/helpers';
 

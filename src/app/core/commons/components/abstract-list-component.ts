@@ -1,11 +1,14 @@
 import { Directive, HostListener, ViewChild, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { Table, TableLazyLoadEvent } from 'primeng/table';
-import { AbstractService } from '../services/abstract.service';
+
+import { NgxSpinnerService } from 'ngx-spinner';
+
 import { LazyLoadEvent } from 'primeng/api';
 import { Popover } from 'primeng/popover';
+import { Table, TableLazyLoadEvent } from 'primeng/table';
+
+import { AbstractService } from '../services/abstract.service';
 import { AbstractNavigationListComponent } from './abstract-navigation-list-component';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastService } from '../../toast.service';
 import { Helpers } from '../../../constants/helpers';
 

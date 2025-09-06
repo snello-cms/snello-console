@@ -2,8 +2,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { Search } from '../models/search.model';
 import moment from 'moment/moment';
+import { Search } from '../models/search.model';
 
 /**
  * Abstract base service for CRUD operations

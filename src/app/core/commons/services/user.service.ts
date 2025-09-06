@@ -1,9 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { User } from '../models/user.model';
 import { HttpClient } from '@angular/common/http';
-import { APP_CONFIG } from '../../../../config/config';
 import Keycloak from 'keycloak-js';
+import { User } from '../models/user.model';
+import { APP_CONFIG } from '../../../../config/config';
 
 /**
  * Service for managing user data and authentication

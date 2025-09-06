@@ -45,7 +45,13 @@
 							"src/assets",
 							"src/config"
 						],
-						"styles": ["src/styles.less"]
+						"styles": [
+							"node_modules/bootstrap/dist/css/bootstrap.min.css",
+							"src/assets/less/font-awesome.min.css",
+							"node_modules/primeicons/primeicons.css",
+							"src/styles.less",
+							"src/assets/less/style.less"
+						]
 					},
 					"configurations": {
 						"production": {
