@@ -1,7 +1,7 @@
 import { Directive, ViewContainerRef, TemplateRef, Input, inject } from '@angular/core';
+import Keycloak from 'keycloak-js';
 import { Permissions } from '../commons/permissions';
 import { APP_CONFIG } from '../../../config/config';
-import Keycloak from 'keycloak-js';
 
 @Directive({
 	selector: '[permit]',

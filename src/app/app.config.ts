@@ -5,20 +5,21 @@ import {
 	provideZonelessChangeDetection,
 	APP_INITIALIZER
 } from '@angular/core';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { KeycloakService, KeycloakAngularModule } from 'keycloak-angular';
+import { NgxSpinnerModule } from 'ngx-spinner';
+
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { providePrimeNG } from 'primeng/config';
+import Aura from '@primeng/themes/aura';
 
 import { routes } from './app.routes';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { KeycloakService, KeycloakAngularModule } from 'keycloak-angular';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { APP_CONFIG, Config } from '../config/config';
 import { initializeKeycloak } from './core/initializers/keycloak.init';
-import { providePrimeNG } from 'primeng/config';
-import Aura from '@primeng/themes/aura';
 import { Helpers } from './constants/helpers';
-import { NgxSpinnerModule } from 'ngx-spinner';
 
 export function getAppConfig(config: Config): ApplicationConfig {
 	return {

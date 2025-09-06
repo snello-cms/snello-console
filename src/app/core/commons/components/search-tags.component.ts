@@ -1,8 +1,8 @@
 import { LowerCasePipe } from '@angular/common';
 import { Component, DoCheck, input, output } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { Search } from '../models/search.model';
-import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
 	template: `

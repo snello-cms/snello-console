@@ -1,25 +1,28 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
-import { HomeComponent } from './pages/home/home.component';
-import { UnauthorizedComponent } from './pages/unauthorized/unauthorized.component';
 
 export const routes: Routes = [
 	{
 		path: '',
-		redirectTo: 'home',
+		redirectTo: 'adminpage',
 		pathMatch: 'full'
 	},
 	{
 		path: 'home',
-		component: HomeComponent,
+		loadComponent: () => import('./pages/home/home.component').then((m) => m.HomeComponent),
+		canActivate: [authGuard]
+	},
+	{
+		path: 'adminpage',
+		loadComponent: () => import('./pages/admin/admin.component').then((m) => m.AdminComponent),
 		canActivate: [authGuard]
 	},
 	{
 		path: 'unauthorized',
-		component: UnauthorizedComponent
+		loadComponent: () => import('./pages/unauthorized/unauthorized.component').then((m) => m.UnauthorizedComponent)
 	},
 	{
 		path: '**',
-		redirectTo: ''
+		redirectTo: 'adminpage'
 	}
 ];
