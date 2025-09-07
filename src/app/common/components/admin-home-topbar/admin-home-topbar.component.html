@@ -6,7 +6,7 @@
 			<span>Home</span>
 		</a>
 	</li>
-	@for (component of items; track component.id) {
+	@for (component of items; track component.section) {
 		<li *permit="component.roles" class="list-group-item">
 			<a [routerLink]="'/' + component.section + '/' + component.id">
 				<i class="{{ component.icon }}"></i>

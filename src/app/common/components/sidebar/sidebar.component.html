@@ -17,14 +17,12 @@
 				'documents_view,publicdata_edit,selectqueries_edit, ' +
 				'selectqueries_view,users_edit, users_view,roles_edit,roles_view,urlmaprules_edit, ' +
 				'urlmaprules_view,links_edit, links_view,draggables_edit, draggables_view'
-			"
-		>
+			">
 			<a
 				class="nav-link"
 				[routerLink]="'/adminpage'"
 				(click)="select('adminpage')"
-				[ngClass]="{ active: isAdminPage() === 'active' }"
-			>
+				[ngClass]="{ active: isAdminPage() === 'active' }">
 				<i class="fa fa-bookmark" aria-hidden="true"></i>
 				ADMIN
 			</a>
@@ -35,8 +33,7 @@
 				class="nav-link"
 				[routerLink]="'/home'"
 				(click)="select('home')"
-				[ngClass]="{ active: isContenPage() === 'active' }"
-			>
+				[ngClass]="{ active: isContenPage() === 'active' }">
 				<i class="fa fa-bookmark-o" aria-hidden="true"></i>
 				CONTENTS
 			</a>
@@ -48,8 +45,7 @@
 			<li [class]="''">
 				<i class="fa fa-user-circle" aria-hidden="true"></i> {{ user.username }} &nbsp;<a
 					(click)="logout()"
-					style="cursor: pointer"
-				>
+					style="cursor: pointer">
 					logout <i class="fa fa-sign-out" aria-hidden="true"></i>
 				</a>
 			</li>

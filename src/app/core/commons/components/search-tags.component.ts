@@ -8,7 +8,7 @@ import { Search } from '../models/search.model';
 	template: `
 		<div class="tags-wrapper">
 			@for (operator of operators; track operator) {
-				@if (operator !== 'startRow' && operator !== 'pageSize' && operator !== 'orderBy') {
+				@if (operator !== 'orderBy') {
 					@for (field of fields[operator]; track field) {
 						@if (checkHiddenField(field)) {
 							@if (filterCheck(operator, field)) {

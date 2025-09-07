@@ -18,6 +18,40 @@ export const routes: Routes = [
 		canActivate: [authGuard]
 	},
 	{
+		path: 'metadata',
+		children: [
+			{
+				path: '',
+				redirectTo: 'list',
+				pathMatch: 'full'
+			},
+			{
+				path: 'list',
+				loadComponent: () =>
+					import('./pages/metadata/metadata-list.component').then((m) => m.MetadataListComponent),
+				canActivate: [authGuard]
+			},
+			{
+				path: 'new',
+				loadComponent: () =>
+					import('./pages/metadata/metadata-edit.component').then((m) => m.MetadataEditComponent),
+				canActivate: [authGuard]
+			},
+			{
+				path: 'edit/:id',
+				loadComponent: () =>
+					import('./pages/metadata/metadata-edit.component').then((m) => m.MetadataEditComponent),
+				canActivate: [authGuard]
+			},
+			{
+				path: 'view/:id',
+				loadComponent: () =>
+					import('./pages/metadata/metadata-view.component').then((m) => m.MetadataViewComponent),
+				canActivate: [authGuard]
+			}
+		]
+	},
+	{
 		path: 'unauthorized',
 		loadComponent: () => import('./pages/unauthorized/unauthorized.component').then((m) => m.UnauthorizedComponent)
 	},

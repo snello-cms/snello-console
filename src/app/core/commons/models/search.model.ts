@@ -12,9 +12,7 @@ export class Search<T> {
 	public nil: T;
 	public notNil: T;
 
-	// Pagination
-	public startRow = 0;
-	public pageSize = 10;
+	// Ordering
 	public orderBy: string | null = null;
 
 	// Additional properties
@@ -44,17 +42,7 @@ export class Search<T> {
 		this.not = new TCreator();
 		this.nil = new TCreator();
 		this.notNil = new TCreator();
-		this.startRow = 0;
-		this.pageSize = 10;
 		this.orderBy = null;
-	}
-
-	/**
-	 * Set pagination parameters
-	 */
-	public setPagination(startRow: number, pageSize: number): void {
-		this.startRow = startRow;
-		this.pageSize = pageSize;
 	}
 
 	/**
