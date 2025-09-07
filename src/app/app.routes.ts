@@ -52,8 +52,62 @@ export const routes: Routes = [
 		]
 	},
 	{
+		path: 'fielddefinition',
+		children: [
+			{ path: '', redirectTo: 'list', pathMatch: 'full' },
+			{
+				path: 'list',
+				loadComponent: () =>
+					import('./pages/field-definition/field-definition-list.component').then(
+						(m) => m.FieldDefinitionListComponent
+					),
+				canActivate: [authGuard]
+			},
+			{
+				path: 'new',
+				loadComponent: () =>
+					import('./pages/field-definition/field-definition-edit.component').then(
+						(m) => m.FieldDefinitionEditComponent
+					),
+				canActivate: [authGuard]
+			},
+			{
+				path: 'edit/:id',
+				loadComponent: () =>
+					import('./pages/field-definition/field-definition-edit.component').then(
+						(m) => m.FieldDefinitionEditComponent
+					),
+				canActivate: [authGuard]
+			}
+		]
+	},
+	{
 		path: 'unauthorized',
 		loadComponent: () => import('./pages/unauthorized/unauthorized.component').then((m) => m.UnauthorizedComponent)
+	},
+	{
+		path: 'document',
+		children: [
+			{ path: '', redirectTo: 'list', pathMatch: 'full' },
+			{
+				path: 'list',
+				loadComponent: () =>
+					import('./pages/document/document-list.component').then((m) => m.DocumentListComponent),
+				canActivate: [authGuard]
+			},
+			{
+				path: 'new',
+				loadComponent: () =>
+					import('./pages/document/document-edit.component').then((m) => m.DocumentEditComponent),
+				canActivate: [authGuard]
+			},
+			{
+				path: 'edit/:id',
+				loadComponent: () =>
+					import('./pages/document/document-edit.component').then((m) => m.DocumentEditComponent),
+				canActivate: [authGuard]
+			}
+		]
 	},
 	{
 		path: '**',
