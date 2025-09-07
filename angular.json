@@ -34,7 +34,7 @@
 					"builder": "@angular/build:application",
 					"options": {
 						"browser": "src/main.ts",
-						"polyfills": ["zone.js"],
+						"polyfills": [],
 						"tsConfig": "tsconfig.app.json",
 						"inlineStyleLanguage": "less",
 						"assets": [
@@ -42,15 +42,24 @@
 								"glob": "**/*",
 								"input": "public"
 							},
+							{ "glob": "**/*", "input": "node_modules/tinymce/skins", "output": "/tinymce/skins/" },
+							{ "glob": "**/*", "input": "node_modules/tinymce/themes", "output": "/tinymce/themes/" },
+							{ "glob": "**/*", "input": "node_modules/tinymce/plugins", "output": "/tinymce/plugins/" },
 							"src/assets",
 							"src/config"
 						],
 						"styles": [
+							"src/custom-theme.scss",
 							"node_modules/bootstrap/dist/css/bootstrap.min.css",
 							"src/assets/less/font-awesome.min.css",
 							"node_modules/primeicons/primeicons.css",
 							"src/styles.less",
 							"src/assets/less/style.less"
+						],
+						"scripts": [
+							"node_modules/jquery/dist/jquery.min.js",
+							"node_modules/bootstrap/dist/js/bootstrap.min.js",
+							"node_modules/tinymce/tinymce.min.js"
 						]
 					},
 					"configurations": {

@@ -70,37 +70,35 @@ export abstract class AbstractListComponent<T> extends AbstractNavigationListCom
 	}
 
 	/**
-	 * Load data from service
+	 * Load data from service (like snello-admin)
 	 */
 	public loaddata(firstReload: boolean, datatable?: any): void {
-		this.showSpinner();
 		this.preLoaddata();
+		// Set firstReload before making the API call to avoid change detection issues
+		this.firstReload = firstReload;
 
 		this.service.getList().subscribe({
 			next: (model) => {
+				// Don't use setTimeout to avoid unnecessary delays
 				this.model = model;
-				this.hideSpinner();
 				this.postList();
 			},
 			error: (error) => {
 				this.handleError(error);
-				this.hideSpinner();
 			}
 		});
 	}
 
 	/**
-	 * Handle lazy loading for PrimeNG table
+	 * Handle lazy loading for PrimeNG table (like snello-admin)
 	 */
 	public lazyLoad(event: LazyLoadEvent, datatable?: any): void {
 		if (!this.firstReload && event.first !== undefined) {
-			if (this.service.search) {
-				this.service.search.startRow = event.first;
-			}
+			this.service._start = event.first;
 		}
 
-		if (event.rows !== undefined && this.service.search) {
-			this.service.search.pageSize = event.rows;
+		if (event.rows !== undefined) {
+			this.service._limit = event.rows;
 		}
 
 		this.preLoad(event, datatable);
@@ -127,7 +125,7 @@ export abstract class AbstractListComponent<T> extends AbstractNavigationListCom
 	 */
 	public reload(datatable: Table): void {
 		if (this.service.search) {
-			this.service.search.startRow = 0;
+			this.service._start = 0;
 		}
 		this.refresh(datatable);
 

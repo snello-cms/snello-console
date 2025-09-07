@@ -3,7 +3,29 @@
 	"KEYCLOAK_REALM": "kayak",
 	"KEYCLOAK_CLIENTID": "snello-admin",
 
-	"BACKEND_API": "https://ldap-integration-api-corporate.icgapp.com",
+	"BACKEND_API": "https://kayak.love",
 	"LDAP_BACKEND_API": "https://ldap-users-corporate.icgapp.dev",
-	"API_APP_VERSION": "https://app-versioning-corporate.icgapp.dev/"
+	"API_APP_VERSION": "https://app-versioning-corporate.icgapp.dev/",
+
+	"asset_path": "",
+	"login_api_path": "https://kayak.love/login",
+	"changepassword_api_path": "https://kayak.love/password/change",
+	"resetpassword_api_path": "https://kayak.love/password/reset",
+	"condition_api_path": "https://kayak.love/api/conditions",
+	"document_api_path": "https://kayak.love/api/documents",
+	"extension_api_path": "https://kayak.love/api/extensions",
+	"field_definition_api_path": "https://kayak.love/api/fielddefinitions",
+	"links_api_path": "https://kayak.love/api/links",
+	"metadata_api_path": "https://kayak.love/api/metadatas",
+	"data_list_api_path": "https://kayak.love/api/datalist",
+	"public_data_api_path": "https://kayak.love/api/publicdata",
+	"select_query_api_path": "https://kayak.love/api/selectqueries",
+	"user_api_path": "https://kayak.love/api/users",
+	"role_api_path": "https://kayak.love/api/roles",
+	"user_roles_api_path": "https://kayak.love/api/userroles",
+	"url_map_rules_api_path": "https://kayak.love/api/urlmaprules",
+	"api_service_path": "https://kayak.love/api",
+	"identity_api_path": "https://kayak.love/api/users",
+	"draggable_api_path": "https://kayak.love/api/draggables",
+	"droppable_api_path": "https://kayak.love/api/droppables"
 }

@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { HttpInterceptorFn, HttpRequest, HttpHandlerFn, HttpEvent } from '@angular/common/http';
-import { Observable, from, switchMap, catchError } from 'rxjs';
+import { Observable, from, switchMap, catchError, of, throwError } from 'rxjs';
 import { KeycloakService } from 'keycloak-angular';
 
 /**
@@ -32,6 +32,7 @@ export const authInterceptor: HttpInterceptorFn = (
 		}),
 		catchError((error) => {
 			console.error('Auth interceptor error:', error);
+			// Continue with the original request on error
 			return next(req);
 		})
 	);

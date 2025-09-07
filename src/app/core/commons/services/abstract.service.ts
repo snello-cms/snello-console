@@ -20,9 +20,21 @@ export abstract class AbstractService<T> {
 	public readonly progress$ = this.progressSubject.asObservable();
 
 	// Search state
-	public search: Search<T> | null = null;
+	public search: any = null;
+	// URL state
+	public url: string = '';
+	// Pagination state (like snello-admin)
+	public _limit = 10;
+	public _start = 0;
 
-	constructor(protected readonly url: string) {
+	constructor(protected readonly urlValue: Observable<string> | string) {
+		if (typeof urlValue === 'string') {
+			this.url = urlValue;
+		} else {
+			urlValue.subscribe((value) => {
+				this.url = value;
+			});
+		}
 		this.initialize();
 	}
 
@@ -43,49 +55,67 @@ export abstract class AbstractService<T> {
 	 * Get paginated list of entities
 	 */
 	public getList(): Observable<T[]> {
-		const params = this.buildHttpParams(this.search);
+		return this.getListSearch(this.search, this._start, this._limit);
+	}
 
-		return this.httpClient.get<T[]>(this.url, { params }).pipe(
-			map((entities) => {
-				this.postList(entities);
-				return entities;
-			}),
-			catchError(this.handleError.bind(this))
-		);
+	/**
+	 * Get list with search parameters (like snello-admin)
+	 */
+	public getListSearch(search: any, start: number, limit: number): Observable<T[]> {
+		let params = new HttpParams();
+		params = params.set('_start', this.toQueryParam('_start', start));
+		params = params.set('_limit', this.toQueryParam('_limit', limit));
+		params = this.applyRestrictions(params, search);
+
+		return this.httpClient
+			.get<T[]>(this.url, {
+				observe: 'response',
+				params: params
+			})
+			.pipe(
+				map((res) => {
+					const listSize = res.headers.get('x-total-count');
+					if (listSize) {
+						this.listSizeSubject.next(+listSize);
+					}
+					const entities: T[] = res.body || [];
+					this.postList(entities);
+					return entities;
+				}),
+				catchError(this.handleError.bind(this))
+			);
 	}
 
 	/**
 	 * Get autocomplete list (limited to 20 items)
 	 */
 	public getAutoCompleteList(): Observable<T[]> {
-		if (this.search) {
-			this.search.pageSize = 20;
-		}
-
-		const params = this.buildHttpParams(this.search);
-
-		return this.httpClient.get<T[]>(this.url, { params }).pipe(catchError(this.handleError.bind(this)));
+		return this.getListSearch(this.search, 0, 20);
 	}
 
 	/**
 	 * Get all entities without pagination
 	 */
-	public getAllList(search?: Search<T>): Observable<T[]> {
-		const searchParams = search || this.search;
-		if (searchParams) {
-			searchParams.pageSize = 0;
-			searchParams.startRow = 0;
-		}
+	public getAllList(search?: any): Observable<T[]> {
+		const searchParams = search || JSON.parse(JSON.stringify(this.search));
+		searchParams._limit = 100000;
 
-		const params = this.buildHttpParams(searchParams);
+		let params = new HttpParams();
+		params = this.applyRestrictions(params, searchParams);
 
-		return this.httpClient.get<T[]>(this.url, { params }).pipe(
-			map((entities) => {
-				this.postList(entities);
-				return entities;
-			}),
-			catchError(this.handleError.bind(this))
-		);
+		return this.httpClient
+			.get<T[]>(this.url, {
+				observe: 'response',
+				params: params
+			})
+			.pipe(
+				map((res) => {
+					const entities: T[] = res.body || [];
+					this.postList(entities);
+					return entities;
+				}),
+				catchError(this.handleError.bind(this))
+			);
 	}
 
 	/**
@@ -99,24 +129,31 @@ export abstract class AbstractService<T> {
 	 * Get total count from server
 	 */
 	public size(): Observable<number> {
-		if (this.search) {
-			this.search.startRow = 0;
-			this.search.pageSize = 1;
-		}
-
-		const params = this.buildHttpParams(this.search);
+		let params = new HttpParams();
+		this._start = 0;
+		this._limit = 10;
+		params = this.applyRestrictions(params, this.search);
 
 		return this.httpClient
-			.get<number>(`${this.url}/listSize`, { params })
-			.pipe(catchError(this.handleError.bind(this)));
+			.get(`${this.url}/listSize`, {
+				observe: 'response',
+				params: params
+			})
+			.pipe(
+				map((res: any) => {
+					return res.headers.get('size') != null ? +res.headers.get('size') : 0;
+				}),
+				catchError(this.handleError.bind(this))
+			);
 	}
 
 	/**
 	 * Find entity by ID
 	 */
 	public find(id: string): Observable<T> {
+		const fullUrl = `${this.url}/${id}`;
 		return this.httpClient
-			.get<T>(`${this.url}/${id}`)
+			.get<T>(fullUrl)
 			.pipe(map(this.handleFindResponse.bind(this)), catchError(this.handleError.bind(this)));
 	}
 
@@ -160,29 +197,15 @@ export abstract class AbstractService<T> {
 	}
 
 	/**
-	 * Build HTTP parameters from search object
+	 * Apply search restrictions to HTTP parameters (like snello-admin)
 	 */
-	protected buildHttpParams(search: Search<T> | null): HttpParams {
-		let params = new HttpParams();
-		if (search) {
-			params = this.applyRestrictions(params, search);
-		}
-		return params;
-	}
-
-	/**
-	 * Apply search restrictions to HTTP parameters
-	 */
-	protected applyRestrictions(params: HttpParams, search: any, prefix = ''): HttpParams {
-		const paramPrefix = prefix ? `${prefix}.` : '';
-
+	protected applyRestrictions(params: HttpParams, search: any): HttpParams {
 		for (const key in search) {
 			if (search[key] !== null && search[key] !== undefined) {
-				if (!(search[key] instanceof Object) || search[key] instanceof Date) {
-					const value = this.toQueryParam(paramPrefix + key, search[key]);
-					params = params.set(paramPrefix + key, value);
-				} else {
-					params = this.applyRestrictions(params, search[key], paramPrefix + key);
+				if (!(search[key] instanceof Object)) {
+					params = params.set(key, this.toQueryParam(key, search[key]));
+				} else if (search[key] instanceof Date) {
+					params = params.set(key, this.toQueryParam(key, search[key]));
 				}
 			}
 		}
@@ -190,11 +213,11 @@ export abstract class AbstractService<T> {
 	}
 
 	/**
-	 * Convert value to query parameter format
+	 * Convert value to query parameter format (like snello-admin)
 	 */
 	protected toQueryParam(field: string, value: any): string {
 		if (value instanceof Date) {
-			return moment(value).utc(true).format('YYYY-MM-DD HH:mm:ss');
+			return (value as Date).toLocaleString('it-IT', { hour12: false });
 		}
 		return String(value);
 	}

@@ -1,0 +1,258 @@
+<sidebar />
+<div class="sidebar">
+	<adminhome-topbar />
+</div>
+
+<div class="sidebar-subpage">
+	<h3>Edit Metadata</h3>
+	<p></p>
+</div>
+
+<div class="main">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-12 col-sm-12">
+				<div class="content view clearfix">
+					<form #theform="ngForm">
+						<div class="form-group clearfix row">
+							<label class="label-text col-sm-3">Label (*)</label>
+							<div class="col-sm-9">
+								<input
+									[(ngModel)]="element.table_name"
+									required
+									name="table"
+									pInputText
+									placeholder="Table (*)"
+									class="w-full" />
+							</div>
+						</div>
+
+						<div class="form-group clearfix row">
+							<label class="label-text col-sm-3">Description</label>
+							<div class="col-sm-9">
+								<input
+									[(ngModel)]="element.description"
+									name="description"
+									pInputText
+									placeholder="Description"
+									class="w-full" />
+							</div>
+						</div>
+
+						<div class="form-group clearfix row">
+							<label class="label-text col-sm-3">
+								@if (element.icon) {
+									<i [class]="element.icon"></i>&nbsp;&nbsp; Icon (*)
+								}
+							</label>
+							<div class="col-sm-9">
+								<p-select
+									[options]="iconItems"
+									[(ngModel)]="element.icon"
+									[filter]="true"
+									name="icon"
+									required
+									placeholder="Select an icon"
+									class="w-full">
+									<ng-template pTemplate="selectedItem">
+										@if (element.icon) {
+											<div style="display: flex; align-items: center">
+												<i [class]="element.icon"></i>
+												<span style="margin-left: 0.5em">{{ getIconLabel(element.icon) }}</span>
+											</div>
+										}
+									</ng-template>
+									<ng-template pTemplate="item" let-icon>
+										<div style="display: flex; align-items: center">
+											<i [class]="icon.value"></i>
+											<span style="margin-left: 0.5em">{{ icon.label }}</span>
+										</div>
+									</ng-template>
+								</p-select>
+							</div>
+						</div>
+
+						<div class="form-group clearfix row">
+							<label class="label-text col-sm-3">It's a new Table?</label>
+							<div class="col-sm-9">
+								<p-toggleSwitch name="newtable" [(ngModel)]="newtable"> </p-toggleSwitch>
+							</div>
+						</div>
+
+						@if (!newtable()) {
+							<div class="form-group clearfix row">
+								<label class="label-text col-sm-3">Select Fields</label>
+								<div class="col-sm-9">
+									<input
+										[(ngModel)]="element.select_fields"
+										name="selectFields"
+										pInputText
+										placeholder="Select Fields"
+										class="w-full" />
+								</div>
+							</div>
+						}
+
+						@if (!newtable()) {
+							<div class="form-group clearfix row">
+								<label class="label-text col-sm-3">Search Fields</label>
+								<div class="col-sm-9">
+									<input
+										[(ngModel)]="element.search_fields"
+										name="searchFields"
+										pInputText
+										placeholder="Search Fields"
+										class="w-full" />
+								</div>
+							</div>
+						}
+
+						@if (!newtable()) {
+							<div class="form-group clearfix row">
+								<label class="label-text col-sm-3">Alias table</label>
+								<div class="col-sm-9">
+									<input
+										[(ngModel)]="element.alias_table"
+										name="alias_table"
+										pInputText
+										placeholder="Alias table"
+										class="w-full" />
+								</div>
+							</div>
+						}
+
+						@if (!newtable()) {
+							<div class="form-group clearfix row">
+								<label class="label-text col-sm-3">Alias condition</label>
+								<div class="col-sm-9">
+									<input
+										[(ngModel)]="element.alias_condition"
+										name="alias_condition"
+										pInputText
+										placeholder="Alias condition"
+										class="w-full" />
+								</div>
+							</div>
+						}
+
+						<div class="form-group clearfix row">
+							<label class="label-text col-sm-3">Table key (*)</label>
+							<div class="col-sm-9">
+								<input
+									[(ngModel)]="element.table_key"
+									[required]="true"
+									name="table_key"
+									pInputText
+									placeholder="table key (*)"
+									class="w-full" />
+							</div>
+						</div>
+
+						<div class="form-group clearfix row">
+							<label class="label-text col-sm-3">Table key Type(*)</label>
+							<div class="col-sm-9">
+								<p-select
+									[(ngModel)]="element.table_key_type"
+									[filter]="false"
+									[options]="tableTypeSelect"
+									[required]="true"
+									name="tableKeyType"
+									placeholder="Select table key type"
+									class="w-full">
+								</p-select>
+							</div>
+						</div>
+
+						@if (newtable() && element.table_key_type === 'slug') {
+							<div class="form-group clearfix row">
+								<label class="label-text col-sm-3">Table key Addition (*)</label>
+								<div class="col-sm-9">
+									<input
+										[(ngModel)]="element.table_key_addition"
+										name="table_key_addition"
+										pInputText
+										placeholder="table key addition"
+										class="w-full" />
+								</div>
+							</div>
+						}
+
+						<div class="form-group clearfix row">
+							<label class="label-text col-sm-3">Advanced Options?</label>
+							<div class="col-sm-9">
+								<p-toggleSwitch name="advanced" [(ngModel)]="advanced"> </p-toggleSwitch>
+							</div>
+						</div>
+
+						@if (advanced() && newtable()) {
+							<div class="form-group clearfix row">
+								<label class="label-text col-sm-3">Creation query</label>
+								<div class="col-sm-9">
+									<input
+										[(ngModel)]="element.creation_query"
+										name="creation_query"
+										pInputText
+										placeholder="Creation query"
+										class="w-full" />
+								</div>
+							</div>
+						}
+
+						@if (advanced()) {
+							<div class="form-group clearfix row">
+								<label class="label-text col-sm-3">Tab & Groups</label>
+								<div class="col-sm-9">
+									<input
+										[(ngModel)]="element.tab_groups"
+										name="tab_groups"
+										pInputText
+										placeholder="(tab1:group0,group1;tab2:group3,group4)"
+										class="w-full" />
+								</div>
+							</div>
+						}
+
+						@if (advanced()) {
+							<div class="form-group clearfix row">
+								<label class="label-text col-sm-3">Order By</label>
+								<div class="col-sm-9">
+									<input
+										[(ngModel)]="element.order_by"
+										name="order_by"
+										pInputText
+										placeholder="Order By"
+										class="w-full" />
+								</div>
+							</div>
+						}
+
+						<div class="btn-group btn-actions pull-right">
+							@if (!element.uuid) {
+								<button
+									(click)="save()"
+									[disabled]="!theform.form.valid"
+									class="btn btn-success"
+									type="button">
+									Save
+								</button>
+							}
+							@if (element.uuid) {
+								<button
+									(click)="update()"
+									[disabled]="!theform.form.valid"
+									class="btn btn-success"
+									type="button">
+									Update
+								</button>
+							}
+							@if (element.uuid) {
+								<button (click)="confirmDelete()" class="btn btn-danger" type="button"> Delete </button>
+							}
+							<button (click)="navigateToList()" class="btn btn-default" type="button"> Cancel </button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

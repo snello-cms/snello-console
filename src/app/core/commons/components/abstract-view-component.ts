@@ -1,26 +1,22 @@
 import { Directive, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+
 import { AbstractService } from '../services/abstract.service';
 import { AbstractNavigationViewComponent } from './abstract-navigation-view-component';
 import { ToastService } from '../../toast.service';
-import { Helpers } from '../../../constants/helpers';
 
 /**
  * Abstract base component for view operations
- * Provides common view functionality for all entity view components
+ * Provides common functionality for display/view operations
  */
 @Directive()
 export abstract class AbstractViewComponent<T> extends AbstractNavigationViewComponent<T> {
-	// Dependency injection
-	protected readonly toastService = inject(ToastService);
-	protected readonly helpers = inject(Helpers);
+	protected readonly router = inject(Router);
 	protected readonly route = inject(ActivatedRoute);
-	protected override readonly router = inject(Router);
+	protected toastService = inject(ToastService);
 
 	// Component state
-	public editMode = false;
-	public override element: T | null = null;
-	public savedError: any = null;
+	protected element: T | null = null;
 
 	constructor(
 		protected readonly service: AbstractService<T>,
@@ -30,57 +26,57 @@ export abstract class AbstractViewComponent<T> extends AbstractNavigationViewCom
 	}
 
 	/**
-	 * Initialize component and load data
+	 * Initialize component
 	 */
 	public ngOnInit(): void {
-		this.route.params.subscribe({
-			next: (params) => this.handleRouteParams(params),
-			error: (error) => this.handleError(error)
+		this.route.params.subscribe((params) => {
+			const id = params['id'];
+			if (id) {
+				this.loadElement(id);
+			}
 		});
 	}
 
 	/**
-	 * Handle route parameters to load entity data
+	 * Load element by ID
 	 */
-	protected handleRouteParams(params: any): void {
-		const id = params['id'];
-
-		if (id) {
-			this.loadEntity(id);
-		} else {
-			this.handleError('Error loading data: No ID provided.');
-		}
-	}
-
-	/**
-	 * Load entity data by ID
-	 */
-	protected loadEntity(id: string): void {
-		this.editMode = true;
-
+	protected loadElement(id: string): void {
 		this.service.find(id).subscribe({
 			next: (element) => {
 				this.element = element;
 				this.postFind();
 			},
-			error: (error) => this.handleError(error)
+			error: (error) => {
+				this.handleError(error);
+			}
 		});
+	}
+
+	/**
+	 * Navigate to edit page
+	 */
+	public edit(): void {
+		this.router.navigate([`/${this.path}/edit`, this.getId()]);
+	}
+
+	/**
+	 * Navigate to list
+	 */
+	public navigateToList(): void {
+		this.router.navigate([`/${this.path}`]);
 	}
 
 	/**
 	 * Handle errors
 	 */
 	protected handleError(error: any): void {
-		this.addError(error);
-	}
-
-	/**
-	 * Add error message to toast
-	 */
-	protected addError(error: any): void {
-		this.toastService.addError(this.helpers.generateErrorMessage(error));
+		this.toastService.addError(error);
 	}
 
 	// Lifecycle hooks - override in subclasses
 	protected postFind(): void {}
+
+	// Abstract methods that must be implemented by subclasses
+	abstract createInstance(): T;
+	abstract getId(): string;
 }

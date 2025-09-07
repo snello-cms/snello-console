@@ -16,7 +16,10 @@ export abstract class AbstractNavigationListComponent<T> {
 	 */
 	public view(element: T): void {
 		this.element = element;
-		this.router.navigate([`/${this.path}/view`, this.getId()]);
+		const id = this.getId();
+		if (id) {
+			this.router.navigate([`/${this.path}/view`, id]);
+		}
 	}
 
 	/**
@@ -24,7 +27,10 @@ export abstract class AbstractNavigationListComponent<T> {
 	 */
 	public edit(element: T): void {
 		this.element = element;
-		this.router.navigate([`/${this.path}/edit`, this.getId()]);
+		const id = this.getId();
+		if (id) {
+			this.router.navigate([`/${this.path}/edit`, id]);
+		}
 	}
 
 	/**

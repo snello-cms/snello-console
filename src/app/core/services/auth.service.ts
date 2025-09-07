@@ -192,9 +192,6 @@ export class AuthService {
 	public updateToken(): Observable<string> {
 		return from(this.keycloakService.updateToken(30)).pipe(
 			switchMap((refreshed) => {
-				if (refreshed) {
-					console.log('Token refreshed');
-				}
 				return this.getToken();
 			}),
 			catchError((error) => {

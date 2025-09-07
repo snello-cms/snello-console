@@ -1,29 +1,23 @@
 import { Directive, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { NgxSpinnerService } from 'ngx-spinner';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { AbstractService } from '../services/abstract.service';
 import { AbstractNavigationEditComponent } from './abstract-navigation-edit-component';
 import { ToastService } from '../../toast.service';
-import { Helpers } from '../../../constants/helpers';
 
 /**
- * Abstract base component for edit/create operations
- * Provides common CRUD functionality for all entity edit components
+ * Abstract base component for edit operations
+ * Provides common functionality for create/update operations
  */
 @Directive()
-export abstract class AbstractEditComponent<T> extends AbstractNavigationEditComponent {
-	// Dependency injection
-	protected readonly toastService = inject(ToastService);
-	protected readonly spinner = inject(NgxSpinnerService);
-	protected readonly helpers = inject(Helpers);
+export abstract class AbstractEditComponent<T> extends AbstractNavigationEditComponent<T> {
+	protected readonly router = inject(Router);
 	protected readonly route = inject(ActivatedRoute);
-	protected override readonly router = inject(Router);
+	protected toastService = inject(ToastService);
 
 	// Component state
+	protected element: T | null = null;
 	public editMode = false;
-	public element: T | null = null;
-	public savedError: any = null;
 
 	constructor(
 		protected readonly service: AbstractService<T>,
@@ -33,177 +27,132 @@ export abstract class AbstractEditComponent<T> extends AbstractNavigationEditCom
 	}
 
 	/**
-	 * Initialize component and load data
+	 * Initialize component
 	 */
 	public ngOnInit(): void {
-		this.route.params.subscribe({
-			next: (params) => this.handleRouteParams(params),
-			error: (error) => this.handleError(error)
-		});
-	}
-
-	/**
-	 * Handle route parameters to determine edit or create mode
-	 */
-	protected handleRouteParams(params: any): void {
-		const id = params['id'];
-
-		if (id) {
-			this.loadExistingEntity(id);
-		} else {
-			this.createNewEntity();
-		}
-	}
-
-	/**
-	 * Load existing entity for editing
-	 */
-	protected loadExistingEntity(id: string): void {
-		this.editMode = true;
-		this.showSpinner();
-
-		this.service.find(id).subscribe({
-			next: (element) => {
-				this.element = element;
-				this.hideSpinner();
-				this.postFind();
-			},
-			error: (error) => {
-				this.handleError(error);
-				this.hideSpinner();
+		this.route.params.subscribe((params) => {
+			const id = params['id'];
+			if (id && id !== 'new') {
+				this.loadElement(id);
+			} else {
+				this.element = this.createInstance();
 			}
 		});
 	}
 
 	/**
-	 * Create new entity instance
+	 * Load element by ID
 	 */
-	protected createNewEntity(): void {
-		this.editMode = false;
-		this.element = this.createInstance();
-		this.postCreate();
+	protected loadElement(id: string): void {
+		this.service.find(id).subscribe({
+			next: (element) => {
+				this.element = element;
+				this.postFind();
+			},
+			error: (error) => {
+				this.handleError(error);
+			}
+		});
 	}
 
 	/**
-	 * Save new entity
+	 * Save new element
 	 */
 	public save(): void {
 		if (!this.preSave()) {
 			return;
 		}
 
-		this.showSpinner();
-		this.editMode = false;
-
 		this.service.persist(this.element).subscribe({
 			next: (element) => {
 				this.element = element;
-				this.hideSpinner();
 				this.postSave();
 				this.navigateAfterSave();
 			},
 			error: (error) => {
 				this.handleError(error);
-				this.hideSpinner();
 			}
 		});
 	}
 
 	/**
-	 * Update existing entity
+	 * Update existing element
 	 */
 	public update(): void {
 		if (!this.preUpdate()) {
 			return;
 		}
 
-		this.showSpinner();
-
 		this.service.update(this.element).subscribe({
 			next: (element) => {
 				this.element = element;
-				this.editMode = false;
-				this.hideSpinner();
 				this.postUpdate();
 				this.navigateAfterUpdate();
 			},
 			error: (error) => {
 				this.handleError(error);
-				this.hideSpinner();
 			}
 		});
 	}
 
 	/**
-	 * Delete entity
+	 * Delete element
 	 */
 	public delete(): void {
-		this.showSpinner();
+		if (!this.element) return;
 
 		this.service.delete(this.getId()).subscribe({
 			next: () => {
-				this.editMode = false;
-				this.hideSpinner();
 				this.postDelete();
-				this.navigateAfterDelete();
+				this.navigateToList();
 			},
 			error: (error) => {
 				this.handleError(error);
-				this.hideSpinner();
 			}
 		});
 	}
 
 	/**
-	 * Check if component is in edit mode
+	 * Navigate to list after save
 	 */
-	public isEditMode(): boolean {
-		return this.editMode;
+	protected navigateAfterSave(): void {
+		this.navigateToList();
 	}
 
-	// Spinner management
-	protected showSpinner(): void {
-		this.spinner.show();
+	/**
+	 * Navigate to list after update
+	 */
+	protected navigateAfterUpdate(): void {
+		this.navigateToList();
 	}
 
-	protected hideSpinner(): void {
-		this.spinner.hide();
+	/**
+	 * Navigate to list
+	 */
+	public navigateToList(): void {
+		this.router.navigate([`/${this.path}`]);
 	}
 
-	// Error handling
+	/**
+	 * Handle errors
+	 */
 	protected handleError(error: any): void {
-		this.addError(error);
-	}
-
-	protected addError(error: any): void {
-		this.toastService.addError(this.helpers.generateErrorMessage(error));
-	}
-
-	protected addWarn(message: string): void {
-		this.toastService.addWarning(message);
-	}
-
-	protected addSuccess(message: string): void {
-		this.toastService.addSuccess(message);
+		this.toastService.addError(error);
 	}
 
 	// Lifecycle hooks - override in subclasses
-	protected postCreate(): void {}
+	protected preSave(): boolean {
+		return true;
+	}
+	protected preUpdate(): boolean {
+		return true;
+	}
 	protected postFind(): void {}
 	protected postSave(): void {}
 	protected postUpdate(): void {}
 	protected postDelete(): void {}
 
-	// Validation hooks - override in subclasses
-	protected preSave(): boolean {
-		return true;
-	}
-
-	protected preUpdate(): boolean {
-		return true;
-	}
-
 	// Abstract methods that must be implemented by subclasses
 	abstract createInstance(): T;
-	abstract override getId(): string;
+	abstract getId(): string;
 }
